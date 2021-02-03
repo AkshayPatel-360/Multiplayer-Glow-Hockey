@@ -6,10 +6,12 @@ public class PlayerMovement : MonoBehaviour
     bool wasJustClicked = true;
     bool canMove;
     Vector2 playerSize;
+    Rigidbody2D rb;
 
     void Start()
     {
-        playerSize = gameObject.GetComponent<SpriteRenderer>().bounds.extents;
+        playerSize = GetComponent<SpriteRenderer>().bounds.extents;
+        rb = GetComponent<Rigidbody2D>();
         
     }
 
@@ -40,7 +42,7 @@ public class PlayerMovement : MonoBehaviour
 
             if (canMove)
             {
-                transform.position = mousePos;
+                rb.MovePosition(mousePos);
             }
              
         }
