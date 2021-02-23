@@ -8,26 +8,9 @@ public class PlayerMovement : MonoBehaviour
     Vector2 playerSize;
     Rigidbody2D rb;
 
-    public Transform BoundaryHolder;
+    public Transform redPlayerBoundaryHolder;
 
     Boundary playerBoundary;
-
-
-
-    struct Boundary
-    {
-        public float UP, Down, Left, Right;
-
-
-        public Boundary(float up,float down,float left, float right)
-        {
-            UP = up;
-            Down = down;
-            Left = left;
-            Right = right;
-        }
-
-    }
 
 
     void Start()
@@ -35,10 +18,10 @@ public class PlayerMovement : MonoBehaviour
         playerSize = GetComponent<SpriteRenderer>().bounds.extents;
         rb = GetComponent<Rigidbody2D>();
 
-        playerBoundary = new Boundary(BoundaryHolder.GetChild(0).position.y,
-                                      BoundaryHolder.GetChild(1).position.y,
-                                      BoundaryHolder.GetChild(2).position.x,
-                                      BoundaryHolder.GetChild(3).position.x);
+        playerBoundary = new Boundary(redPlayerBoundaryHolder.GetChild(0).position.y,
+                                      redPlayerBoundaryHolder.GetChild(1).position.y,
+                                      redPlayerBoundaryHolder.GetChild(2).position.x,
+                                      redPlayerBoundaryHolder.GetChild(3).position.x);
 
 
     }
