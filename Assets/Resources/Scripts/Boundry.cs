@@ -1,11 +1,11 @@
 ﻿struct Boundary
 {
-    public float UP, Down, Left, Right;
+    public float Up, Down, Left, Right;
 
 
     public Boundary(float up, float down, float left, float right)
     {
-        UP = up;
+        Up = up;
         Down = down;
         Left = left;
         Right = right;
