@@ -4,50 +4,69 @@ using UnityEngine;
 
 public class Ai : MonoBehaviour
 {
-    public float moveSpeed;
+    public float MaxMovementSpeed;
     private Rigidbody2D rb;
-    private Rigidbody2D puckRb;
+    private Vector2 startingPosition;
 
-    private Vector2 startingPos;
+    public Rigidbody2D Puck;
 
-    public Transform aiPlayerBoundaryHolder;
-    private Boundary aiBoundary;
+    public Transform PlayerBoundaryHolder;
+    private Boundary playerBoundary;
 
-    public Transform puckBoundaryHolder;
+    public Transform PuckBoundaryHolder;
     private Boundary puckBoundary;
 
-    private Vector2 targetPos;
+    private Vector2 targetPosition;
 
+    private bool isFirstTimeInOpponentsHalf = true;
+    private float offsetXFromTarget;
 
-
-    // Start is called before the first frame update
-    void Start()
+    private void Start()
     {
         rb = GetComponent<Rigidbody2D>();
-        puckRb = GetComponent<Rigidbody2D>();
-        startingPos = rb.position;
+        startingPosition = rb.position;
 
-        aiBoundary = new Boundary(aiPlayerBoundaryHolder.GetChild(0).position.y,
-                                      aiPlayerBoundaryHolder.GetChild(1).position.y,
-                                      aiPlayerBoundaryHolder.GetChild(2).position.x,
-                                      aiPlayerBoundaryHolder.GetChild(3).position.x);
+        playerBoundary = new Boundary(PlayerBoundaryHolder.GetChild(0).position.y,
+                              PlayerBoundaryHolder.GetChild(1).position.y,
+                              PlayerBoundaryHolder.GetChild(2).position.x,
+                              PlayerBoundaryHolder.GetChild(3).position.x);
 
-        puckBoundary = new Boundary(puckBoundaryHolder.GetChild(0).position.y,
-                                      puckBoundaryHolder.GetChild(1).position.y,
-                                      puckBoundaryHolder.GetChild(2).position.x,
-                                      puckBoundaryHolder.GetChild(3).position.x);
-
-
-
-
-
-
-
+        puckBoundary = new Boundary(PuckBoundaryHolder.GetChild(0).position.y,
+                              PuckBoundaryHolder.GetChild(1).position.y,
+                              PuckBoundaryHolder.GetChild(2).position.x,
+                              PuckBoundaryHolder.GetChild(3).position.x);
     }
 
-    // Update is called once per frame
-    void Update()
+    private void FixedUpdate()
     {
-        
+        float movementSpeed;
+
+        if (Puck.position.y < puckBoundary.Down)
+        {
+            if (isFirstTimeInOpponentsHalf)
+            {
+                isFirstTimeInOpponentsHalf = false;
+                offsetXFromTarget = Random.Range(-1f, 1f);
+            }
+
+            movementSpeed = MaxMovementSpeed * Random.Range(0.1f, 0.3f);
+            targetPosition = new Vector2(Mathf.Clamp(Puck.position.x + offsetXFromTarget, playerBoundary.Left,
+                                                    playerBoundary.Right),
+                                        startingPosition.y);
+        }
+        else
+        {
+            isFirstTimeInOpponentsHalf = true;
+
+            movementSpeed = Random.Range(MaxMovementSpeed * 0.4f, MaxMovementSpeed);
+            targetPosition = new Vector2(Mathf.Clamp(Puck.position.x, playerBoundary.Left,
+                                        playerBoundary.Right),
+                                        Mathf.Clamp(Puck.position.y, playerBoundary.Down,
+                                        playerBoundary.UP
+                                        ));
+        }
+
+        rb.MovePosition(Vector2.MoveTowards(rb.position, targetPosition,
+                movementSpeed * Time.fixedDeltaTime));
     }
 }
